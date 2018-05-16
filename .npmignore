@@ -5,3 +5,4 @@
 .npmignore
 .travis.yml
 renovate.json
+test.js

@@ -2,5 +2,4 @@
 
 >Fetch [Split Bus Station](http://www.ak-split.hr/vozni-red/) timetable from your terminal
 
-This is base template for all my npm packages. :tada:
 

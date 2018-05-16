@@ -7,7 +7,9 @@
     "ak-split": "cli.js"
   },
   "scripts": {
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "test": "tape test.js",
+    "test:debug": "node --inspect-brk node_modules/.bin/tape test.js"
   },
   "keywords": [],
   "repository": {
@@ -24,7 +26,12 @@
     "url": "https://github.com/vladimyr/ak-split-cli/issues"
   },
   "homepage": "https://github.com/vladimyr/ak-split-cli",
-  "dependencies": {},
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.2",
+    "got": "^8.3.1",
+    "tape": "^4.9.0",
+    "url-join": "^4.0.0"
+  },
   "devDependencies": {
     "eslint": "^4.19.1",
     "eslint-config-semistandard": "^12.0.1",
