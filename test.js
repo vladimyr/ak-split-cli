@@ -1,6 +1,12 @@
 'use strict';
 
-const { getStations, getTravelDates, Type } = require('./');
+const {
+  getArrivals,
+  getDepartures,
+  getStations,
+  getTravelDates,
+  Type
+} = require('./');
 const test = require('tape');
 
 const year = new Date().getFullYear();
@@ -33,6 +39,22 @@ test('Fetch travel dates', async t => {
   t.notEqual(dates.length, 0, `${dates.length} travel dates available`);
   t.comment(`dates: ${printArray(dates)}`);
   t.ok(isDate(dates[0]), 'travel dates have DD.MM.YYYY format');
+});
+
+test('Fetch departures', async t => {
+  t.plan(1);
+  const stations = await getStations(Type.Departure);
+  const dest = stations.find(it => it.name === 'Zagreb');
+  const departures = await getDepartures(dest);
+  t.notEqual(departures.length, 0, `${departures.length} departures available`);
+});
+
+test('Fetch arrivals', async t => {
+  t.plan(1);
+  const stations = await getStations(Type.Departure);
+  const start = stations.find(it => it.name === 'Zagreb');
+  const arrivals = await getArrivals(start);
+  t.notEqual(arrivals.length, 0, `${arrivals.length} arrivals available`);
 });
 
 function printArray(arr, limit = 3) {
