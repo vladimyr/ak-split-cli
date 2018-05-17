@@ -12,6 +12,7 @@ const chalk = require('chalk');
 const fuzzysearch = require('fuzzysearch');
 const inquirer = require('inquirer');
 const pkg = require('./package.json');
+const print = require('./printer');
 inquirer.registerPrompt('autocomplete', require('inquirer-autocomplete-prompt'));
 
 const flag = (argv, short, long) => ({ [long]: (short && argv[short]) || argv[long] });
@@ -33,7 +34,6 @@ const help = chalk`
 
   Options:
     -j, --json     Output data in JSON format                          [boolean]
-    -w, --web      Show data using web browser                         [boolean]
     -h, --help     Show help                                           [boolean]
     -v, --version  Show version number                                 [boolean]
 
@@ -46,7 +46,8 @@ program().catch(err => { throw err; });
 async function program(options = getOptions(argv)) {
   const {
     version: showVersion,
-    help: showHelp
+    help: showHelp,
+    json: outputJson
   } = options;
 
   if (showVersion) return console.log(pkg.version);
@@ -62,13 +63,15 @@ async function program(options = getOptions(argv)) {
   const timetable = await getTimetable(type, station, travelDate);
 
   console.log();
-  console.log(jsonify(timetable));
+  if (outputJson) return console.log(jsonify(timetable));
+  print(timetable, type);
 }
 
 function getOptions(argv) {
   const options = {
     ...flag(argv, 'h', 'help'),
-    ...flag(argv, 'v', 'version')
+    ...flag(argv, 'v', 'version'),
+    ...flag(argv, 'j', 'json')
   };
   return options;
 }
