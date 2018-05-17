@@ -6,7 +6,7 @@ const {
   getStations,
   getTravelDates,
   Type
-} = require('./');
+} = require('./client');
 const test = require('tape');
 
 const year = new Date().getFullYear();
@@ -19,11 +19,12 @@ const isStation = obj => obj && Number.isFinite(obj.id) && isString(obj.name);
 const toJSON = arg => JSON.stringify(arg);
 
 test('Fetch stations', async t => {
-  t.plan(2);
+  t.plan(3);
   const stations = await getStations(Type.Arrival);
   t.notEqual(stations.length, 0, `${stations.length} stations fetched`);
   t.comment(`stations: ${printArray(stations)}`);
   t.ok(isStation(stations[0]), 'stations have `id` and `name` properties');
+  t.false(contains(stations, 'Split'), 'Split is not valid start');
 });
 
 test('Fetch destinations', async t => {

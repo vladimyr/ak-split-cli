@@ -56,12 +56,13 @@ async function getTimetable(type, station, date = today()) {
 function parseStations(html, type) {
   const $ = cheerio.load(html);
   const name = type === Type.Arrival ? 'dolasci' : 'polasci';
-  const stations = $(`#select_${name} option`).map((_, el) => ({
-    id: parseInt($(el).attr('value'), 10),
-    name: $(el).text().trim()
-  })).get();
-  if (type === Type.Departure) return without(stations, 'Split');
-  return stations;
+  const stations = $(`#select_${name} option`).map((_, el) => {
+    const $el = $(el);
+    const id = parseInt($el.attr('value'), 10);
+    const name = $el.text().trim();
+    return { id, name };
+  }).get();
+  return without(stations, 'Split');
 }
 
 function parseTravelDates(html) {
