@@ -9,7 +9,6 @@ const {
   Type
 } = require('./client');
 const { getDateStr, formatDate, normalize } = require('./helpers');
-const argv = require('minimist')(process.argv.slice(2));
 const chalk = require('chalk');
 const fuzzysearch = require('fuzzysearch');
 const inquirer = require('inquirer');
@@ -17,7 +16,6 @@ const pkg = require('./package.json');
 const print = require('./printer');
 inquirer.registerPrompt('autocomplete', require('inquirer-autocomplete-prompt'));
 
-const flag = (argv, short, long) => ({ [long]: (short && argv[short]) || argv[long] });
 const jsonify = obj => JSON.stringify(obj, null, 2);
 const search = (needle, haystack) => {
   return fuzzysearch(needle.toLowerCase(), haystack.toLowerCase());
@@ -43,17 +41,18 @@ const help = chalk`
   Report issue: {green ${pkg.bugs.url}}
 `;
 
-program().catch(err => { throw err; });
+const options = require('minimist-options')({
+  help: { type: 'boolean', alias: 'h' },
+  version: { type: 'boolean', alias: 'v' },
+  json: { type: 'boolean', alias: 'j' }
+});
+const argv = require('minimist')(process.argv.slice(2), options);
 
-async function program(options = getOptions(argv)) {
-  const {
-    version: showVersion,
-    help: showHelp,
-    json: outputJson
-  } = options;
+program(argv).catch(err => { throw err; });
 
-  if (showVersion) return console.log(pkg.version);
-  if (showHelp) return console.log(help);
+async function program(flags) {
+  if (flags.version) return console.log(pkg.version);
+  if (flags.help) return console.log(help);
 
   const type = await selectType();
   const [stations, travelDates] = await Promise.all([
@@ -65,17 +64,8 @@ async function program(options = getOptions(argv)) {
   const timetable = await getTimetable(type, station, travelDate);
 
   console.log();
-  if (outputJson) return console.log(jsonify(timetable));
+  if (flags.json) return console.log(jsonify(timetable));
   print(timetable, type);
-}
-
-function getOptions(argv) {
-  const options = {
-    ...flag(argv, 'h', 'help'),
-    ...flag(argv, 'v', 'version'),
-    ...flag(argv, 'j', 'json')
-  };
-  return options;
 }
 
 async function selectType() {

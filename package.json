@@ -36,6 +36,7 @@
     "inquirer": "^5.2.0",
     "inquirer-autocomplete-prompt": "^0.12.2",
     "minimist": "^1.2.0",
+    "minimist-options": "^3.0.2",
     "tape": "^4.9.0",
     "url-join": "^4.0.0"
   },
